@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "esnext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "Node",
+    "sourceMap": true,
+    "baseUrl": "./"
+  },
+  "include": ["nextgisweb.d.ts", "src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,13 +1,10 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable import/newline-after-import */
-/* eslint-disable import/order */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 
 declare module '@nextgisweb/pyramid/type/api' {
-  import type * as ns355 from '@nextgisweb/resource/type/api';
-  import type * as ns650 from '@nextgisweb/tracker/type/api';
   import type * as ns155 from '@nextgisweb/file-upload/type/api';
+  import type * as ns355 from '@nextgisweb/resource/type/api';
   import type * as ns426 from '@nextgisweb/webmap/type/api';
+  import type * as ns650 from '@nextgisweb/tracker/type/api';
 
   export {};
   export type HealthcheckResponse = {

@@ -1,10 +1,12 @@
 import NgwMap from '@nextgis/ngw-leaflet';
-import { IdentifyItem } from '@nextgis/ngw-kit';
+
+import { IdentifyPanel } from './panels/IdentifyPanel';
 import { LegendPanel } from './panels/LegendPaned';
 
+import type { IdentifyItem } from '@nextgis/ngw-kit';
 import type { Feature, Point } from 'geojson';
+
 import type { ArchitectureFields } from './interface';
-import { IdentifyPanel } from './panels/IdentifyPanel';
 
 const ARC_POINTS_ID = 4980;
 
@@ -92,7 +94,7 @@ NgwMap.create({
   // ------------------============ Identify ============------------------- //
   /////////////////////////////////////////////////////////////////////////////
 
-  ngwMap.emitter.on('click', (e) => {
+  ngwMap.emitter.on('click', () => {
     ngwMap.cancelPromises('select', 'identify');
     ngwMap.removeLayer('geojson');
     identifyPanel.container.innerHTML = '...loading';

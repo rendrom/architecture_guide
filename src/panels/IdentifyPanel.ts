@@ -1,6 +1,7 @@
-import type { Point } from 'geojson';
-import type NgwMap from '@nextgis/ngw-leaflet';
 import type { IdentifyItem } from '@nextgis/ngw-kit';
+import type NgwMap from '@nextgis/ngw-leaflet';
+import type { Point } from 'geojson';
+
 import type { ArchitectureFields } from '../interface';
 
 export class IdentifyPanel {
@@ -26,7 +27,10 @@ export class IdentifyPanel {
       select.appendChild(option);
     });
     select.addEventListener('change', () => {
-      this.setSelected(items[select.value], info);
+      if (select.value) {
+        const item = items[Number(select.value)];
+        this.setSelected(item, info);
+      }
     });
     this.container.appendChild(select);
     this.container.appendChild(info);
@@ -46,12 +50,9 @@ export class IdentifyPanel {
       item.resource().then((resource) => {
         info.innerHTML = '';
         resource.fields.forEach((field) => {
-          const prop =
-            '<div>' +
-            field.display_name +
-            ': ' +
-            feature.properties[field.keyname] +
-            '</div>';
+          const val =
+            feature.properties[field.keyname as keyof ArchitectureFields];
+          const prop = '<div>' + field.display_name + ': ' + val + '</div>';
           info.innerHTML += prop;
         });
       });

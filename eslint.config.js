@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint';
 export default [
   {
     files: ['**/*.{js,mjs,cjs,ts}'],
-    ignores: ['node_modules', 'dist', 'public', '.nuxt'],
+    ignores: ['node_modules', 'dist', 'public'],
   },
   {
     languageOptions: { globals: globals.browser },

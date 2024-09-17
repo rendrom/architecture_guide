@@ -1,11 +1,10 @@
+import type { LayerLegend } from '@nextgis/ngw-connector';
 import type NgwMap from '@nextgis/ngw-leaflet';
-import type { LegendSymbol } from '@nextgisweb/render/type/api';
-import type { LayerDef } from '@nextgis/webmap';
 
 export class LegendPanel {
   container: HTMLElement;
 
-  public legend: { layerId: LayerDef; legend: LegendSymbol[] }[];
+  public legend: LayerLegend[] = [];
 
   constructor(public webMap: NgwMap) {
     const legendContainer = document.createElement('div');
@@ -13,7 +12,7 @@ export class LegendPanel {
     this.container = legendContainer;
   }
 
-  setLegend(legend: { layerId: LayerDef; legend: LegendSymbol[] }[]) {
+  setLegend(legend: LayerLegend[]) {
     this.legend = legend;
   }
 
