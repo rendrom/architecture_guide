@@ -109,11 +109,11 @@ NgwMap.create({
     },
     { bar: true },
   );
-  ngwMap.addControl(identifyControl, 'top-right');
 
   // Handle map click
   ngwMap.emitter.on('ngw:select', (e) => {
     if (e) {
+      ngwMap.addControl(identifyControl, 'top-right');
       identifyPanel.fillIdentifyPanel(
         e.getIdentifyItems() as IdentifyItem<ArchitectureFields, Point>[],
       );
@@ -124,6 +124,8 @@ NgwMap.create({
   // --------------------============ Legend ============------------------- //
   /////////////////////////////////////////////////////////////////////////////
 
+
+
   const legendControl = ngwMap.createControl(
     {
       onAdd: () => legendPanel.container,
@@ -133,5 +135,7 @@ NgwMap.create({
     },
     { bar: true },
   );
+
   ngwMap.addControl(legendControl, 'bottom-left');
+
 });

@@ -18,6 +18,10 @@ export class IdentifyPanel {
     this.container.innerHTML = '';
 
     const info = document.createElement('div');
+    info.classList.add('info');
+
+    const close_button = document.createElement('div');
+    close_button.classList.add('closeButton');
 
     const select = document.createElement('select');
     items.forEach((item, i) => {
@@ -32,8 +36,17 @@ export class IdentifyPanel {
         this.setSelected(item, info);
       }
     });
+    this.container.appendChild(close_button)
     this.container.appendChild(select);
     this.container.appendChild(info);
+
+    close_button.addEventListener('click', () => {
+      console.log(this.webMap)
+      // this.setSelected(items[0], info);
+      this.webMap.removeControl(this.container)
+      console.log(this.container)
+      // this.webMap.addControl(legendControl, 'bottom-left');
+    })
 
     this.setSelected(items[0], info);
   }

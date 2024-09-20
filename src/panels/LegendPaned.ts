@@ -38,6 +38,9 @@ export class LegendPanel {
           const img = document.createElement('img');
           img.src = `data:image/png;base64,${item.icon.data}`;
           img.alt = item.display_name;
+          if (!item.render) {
+            img.className = 'disabled';
+          }
 
           // Create a label for the legend item
           const label = document.createElement('span');
@@ -49,11 +52,46 @@ export class LegendPanel {
           itemContainer.appendChild(img);
           itemContainer.appendChild(label);
 
+          img.addEventListener('click', () => {
+            console.log('1');
+            layerLegend.setSymbolRender(item.index, !item.render);
+            //setSymbolRender doesn't type correctly
+            this.displayLegend()
+          })
+
           layerSection.appendChild(itemContainer);
         }
       });
 
+      const close_button = document.createElement('div');
+      close_button.classList.add('closeButton');
+      close_button.addEventListener('click', () => {
+        console.log('close')
+        this.container.removeChild(layerSection)
+        this.container.removeChild(close_button)
+        this.container.appendChild(legendButton)
+        console.log(this.container)
+      })
+
+
+      //create a minimized panel
+
+      const legendButton = document.createElement('div')
+      legendButton.classList.add('legendButton')
+      legendButton.addEventListener('click', () => {
+        console.log('open')
+        this.container.appendChild(close_button);
+        this.container.appendChild(layerSection);
+        this.container.removeChild(legendButton)
+      })
+
+      //append legend children
+
+      this.container.appendChild(close_button);
       this.container.appendChild(layerSection);
+
     });
+
+
   }
 }
