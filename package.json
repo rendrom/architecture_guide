@@ -12,7 +12,7 @@
   "license": "ISC",
   "description": "A web app to guide architectural data with interactive maps",
   "dependencies": {
-    "@nextgis/ngw-leaflet": "^3.0.0-alpha.7",
+    "@nextgis/ngw-leaflet": "^3.0.0-alpha.8",
     "leaflet": "1.7.1"
   },
   "devDependencies": {

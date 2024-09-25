@@ -6,10 +6,54 @@ export class LegendPanel {
 
   public legend: LayerLegend[] = [];
 
+  //element values
+
+  public closeButton: HTMLElement = document.createElement('div');
+  public legendButton: HTMLElement = document.createElement('div');
+  public layerSection: HTMLElement = document.createElement('div');
+
+  private _handleClick?: () => void;
+
   constructor(public webMap: NgwMap) {
     const legendContainer = document.createElement('div');
     legendContainer.className = 'legend-container';
     this.container = legendContainer;
+  }
+
+  // Minimize legend panel method
+
+  // handleOpenClickMethod() {
+  //   console.log(this.container);
+  //   this.container.innerHTML = '';
+  //   this.initFullLeg();
+  // }
+
+  initMinLeg() {
+    this.legendButton.classList.add('legend-button');
+    const handleOpenClick = () => {
+      if (this._handleClick) {
+        this.closeButton.removeEventListener('click', this._handleClick);
+      }
+      this.container.innerHTML = '';
+      this.initFullLeg();
+      // console.log(this.container);
+    };
+    this.legendButton.addEventListener('click', handleOpenClick);
+    this.container.appendChild(this.legendButton);
+  }
+
+  // Open legend panel method
+
+  initFullLeg() {
+    this.closeButton.classList.add('close-button');
+    this._handleClick = () => {
+      console.log(this.container);
+      this.container.innerHTML = '';
+      this.initMinLeg();
+    };
+    this.closeButton.addEventListener('click', this._handleClick);
+    this.container.appendChild(this.closeButton);
+    this.container.appendChild(this.layerSection);
   }
 
   setLegend(legend: LayerLegend[]) {
@@ -20,8 +64,8 @@ export class LegendPanel {
     this.container.innerHTML = '';
 
     this.legend.forEach((layerLegend) => {
-      const layerSection = document.createElement('div');
-      layerSection.classList.add('layer-section');
+      this.layerSection.classList.add('layer-section');
+      this.layerSection.innerHTML = ''; // destroys layersection children
 
       // Add a title for the layer
       const layerTitle = document.createElement('h3');
@@ -29,7 +73,7 @@ export class LegendPanel {
       layerTitle.textContent =
         this.webMap.getLayer(layerLegend.layerId)!.options.name ||
         `Layer ID: ${layerLegend.layerId}`;
-      layerSection.appendChild(layerTitle);
+      this.layerSection.appendChild(layerTitle);
 
       // Iterate through each LegendItem in the current LayerLegend
       layerLegend.legend.forEach((item) => {
@@ -53,45 +97,17 @@ export class LegendPanel {
           itemContainer.appendChild(label);
 
           img.addEventListener('click', () => {
-            console.log('1');
-            layerLegend.setSymbolRender(item.index, !item.render);
+            if (layerLegend.setSymbolRender) {
+              layerLegend.setSymbolRender(item.index, !item.render);
+            }
             //setSymbolRender doesn't type correctly
-            this.displayLegend()
-          })
+            this.displayLegend();
+          });
 
-          layerSection.appendChild(itemContainer);
+          this.layerSection.appendChild(itemContainer);
         }
       });
-
-      const close_button = document.createElement('div');
-      close_button.classList.add('closeButton');
-      close_button.addEventListener('click', () => {
-        console.log('close')
-        this.container.removeChild(layerSection)
-        this.container.removeChild(close_button)
-        this.container.appendChild(legendButton)
-        console.log(this.container)
-      })
-
-
-      //create a minimized panel
-
-      const legendButton = document.createElement('div')
-      legendButton.classList.add('legendButton')
-      legendButton.addEventListener('click', () => {
-        console.log('open')
-        this.container.appendChild(close_button);
-        this.container.appendChild(layerSection);
-        this.container.removeChild(legendButton)
-      })
-
-      //append legend children
-
-      this.container.appendChild(close_button);
-      this.container.appendChild(layerSection);
-
     });
-
-
+    this.initFullLeg();
   }
 }
