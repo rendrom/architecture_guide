@@ -31,26 +31,61 @@
 
       .identify-panel {
         background-color: rgba(255, 255, 255, 0.8);
-        max-height: 80vh;
-        overflow: auto;
-        width: 200px;
+        width: 180px;
         text-align: center;
+        padding: 10px 0;
       }
       .identify-panel select {
         margin: 5px;
       }
+      .info {
+        overflow: auto;
+        max-height: 16vh;
+      }
 
       .legend-container {
+        overflow: auto;
         background-color: white;
-        padding: 10px;
       }
       .legend-item {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
       }
       .legend-item img {
         margin-right: 10px;
+      }
+      .legend-item img.disabled {
+        opacity: 0.3;
+      }
+      .close-button {
+        background-image: url('./icons/pngegg.png');
+        background-size: contain;
+        border-radius: 100%;
+        width: 14px;
+        height: 14px;
+
+        position: absolute;
+        top: 5px;
+        right: 5px;
+
+        /* margin-right: 10px;
+        margin-left: auto;
+        margin-top: 5px; */
+      }
+      .legend-button {
+        background-image: url('./icons/legend.png');
+        background-size: contain;
+        width: 30px;
+        height: 30px;
+
+        background-color: rgb(255, 255, 255);
+        border: 1px solid rgb(75, 75, 75);
+        border-radius: 5%
+      }
+      .layer-section {
+        padding: 10px;
+        background-color: rgb(255, 255, 255);
+        margin-right: 20px;
       }
     </style>
   </head>
