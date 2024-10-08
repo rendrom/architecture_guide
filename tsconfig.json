@@ -7,8 +7,9 @@
     "skipLibCheck": true,
     "moduleResolution": "Node",
     "sourceMap": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "jsx": "react"
   },
-  "include": ["nextgisweb.d.ts", "src/**/*.ts"],
+  "include": ["nextgisweb.d.ts", "src/**/*.ts", "src/main.tsx"],
   "exclude": ["node_modules", "dist"]
 }
