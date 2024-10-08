@@ -1,8 +1,6 @@
-// @ts-check
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
-module.exports = function (app) {
+export default function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
@@ -11,4 +9,4 @@ module.exports = function (app) {
       secure: false,
     }),
   );
-};
+}

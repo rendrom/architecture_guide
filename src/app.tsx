@@ -1,44 +1,46 @@
-import { MapControl, ToggleControl } from '@nextgis/react-ngw-map';
-import ReactNgwOl from '@nextgis/react-ngw-ol';
-import React, { useRef, useState } from 'react';
+// import ReactNgwMap from '@nextgis/react-ngw-ol';
+import ReactNgwMap from '@nextgis/react-ngw-leaflet';
+import { MapControl } from '@nextgis/react-ngw-map';
+import { useState } from 'react';
 
 import { LegendPanel } from './panels/legendPanel';
 
-const defaultControls = {
-  legendEnabled: true,
-  infoPanelEnabled: true,
-};
+import type { NgwMap } from '@nextgis/ngw-map';
+import type { MapContainerProps } from '@nextgis/react-ngw-map';
+
+// const defaultControls = {
+//   legendEnabled: true,
+//   infoPanelEnabled: true,
+// };
 
 export const App = () => {
-  const ngwMap = useRef();
+  const [ngwMap, setNgwMap] = useState<NgwMap>();
 
-  const [webMap, setWebMap] = useState(ngwMap.current);
+  // const [сontrolState, toggleMapContorls] = useState(defaultControls);
 
-  const [сontrolState, toggleMapContorls] = useState(defaultControls);
-
-  const mapOptions = {
+  const mapOptions: MapContainerProps = {
     id: 'map',
     baseUrl: '',
-    resources: [{ resource: 4980, id: 'webmap', fit: true }],
+    resources: [{ resource: 1, id: 'webmap', fit: true }],
     whenCreated: (n) => {
-      ngwMap.current = n;
-      setWebMap(n);
-      console.log(n);
+      setNgwMap(n);
     },
   };
 
   return (
-    <ReactNgwOl {...mapOptions}>
+    <ReactNgwMap {...mapOptions}>
       <MapControl position="bottom-right" margin>
-        {ngwMap.current ? (
+        {ngwMap ? (
           <LegendPanel ngwMap={ngwMap} />
         ) : (
           <div
             className="test"
-            onClick={() => console.log(ngwMap.current)}
+            onClick={() => {
+              console.log(ngwMap);
+            }}
           ></div>
         )}
       </MapControl>
-    </ReactNgwOl>
+    </ReactNgwMap>
   );
 };
