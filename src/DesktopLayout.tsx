@@ -1,80 +1,41 @@
 import ReactNgwMap from '@nextgis/react-ngw-leaflet';
 import { Splitter } from 'antd';
-import { useMemo, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 
 import styles from './app.module.css';
 
 import type { NgwMap } from '@nextgis/ngw-map';
 import type { MapContainerProps } from '@nextgis/react-ngw-map';
 import type { ReactNode } from 'react';
+import { BaseLayoutOptions } from './interfaces';
+
+interface DesktopLayoutOptions extends BaseLayoutOptions {
+  vw: number;
+}
 
 export const DesktopLayout = ({
-  setNgwMap,
+  content,
+  sidebar,
   vw,
-  children,
-}: {
-  setNgwMap: React.Dispatch<React.SetStateAction<NgwMap | undefined>>;
-  vw: number;
-  children: ReactNode;
-}) => {
-  const [splitPanel, toggleSplitPanel] = useState(true);
-  const [mapWidth, setMapWidth] = useState(0.7 * vw);
-  const onSplitterSnap = () => {
-    toggleSplitPanel(!splitPanel);
-    if (splitPanel) {
-      setMapWidth(vw);
-    }
-    if (!splitPanel) {
-      setMapWidth(0.7 * vw);
-    }
-  };
-
-  const mapOptions: MapContainerProps = useMemo(
-    () => ({
-      id: 'map',
-      style: {
-        width: `${mapWidth}px`,
-        height: '100%',
-        border: '2px solid red',
-      },
-      resources: [
-        {
-          resource: 1,
-          id: 'webmap',
-          fit: true,
-          adapterOptions: { selectable: true },
-        },
-      ],
-      whenCreated: (n) => {
-        setNgwMap(n);
-      },
-    }),
-    [mapWidth],
-  );
+  ...splitterOptions
+}: DesktopLayoutOptions) => {
+  const [splitPanel, toggleSplitPanel] = useReducer((state) => !state, true);
 
   return (
     <div className={styles.main}>
-      <Splitter
-        onResize={(size) => {
-          setMapWidth(vw - size[1]);
-          console.log(vw, mapWidth, size[1]);
-        }}
-        onResizeEnd={(size) => {
-          if (size[1] < 0.1 * vw) {
-            onSplitterSnap();
-          }
-        }}
-      >
+      <Splitter {...splitterOptions}>
         <Splitter.Panel defaultSize={0.7 * vw}>
-          <ReactNgwMap {...mapOptions}></ReactNgwMap>
+          <div style={{width: '100%', height: '100%' }}>
+            {content}
+          </div>
         </Splitter.Panel>
         {splitPanel && (
           <Splitter.Panel defaultSize={0.3 * vw} max={0.4 * vw}>
-            {children}
+            {sidebar}
           </Splitter.Panel>
         )}
       </Splitter>
-      <div className={styles.snap} onClick={onSplitterSnap}></div>
+      <div className={styles.snap} onClick={toggleSplitPanel}></div>
     </div>
   );
 };

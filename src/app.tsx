@@ -92,22 +92,6 @@ export const App = () => {
     onResize();
   }, [onResize]);
 
-  // const Info = () => {
-  //   return (
-  //     <div>
-  //       {selectedItem ? (
-  //         <div>
-  //           <h1>INFO</h1>
-  //         </div>
-  //       ) : (
-  //         <div className="test">
-  //           <h1>LOADING...</h1>
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
   return (
     <ConfigProvider
       theme={{
@@ -121,11 +105,10 @@ export const App = () => {
       {vw > vh ? (
         <DesktopLayout
           vw={vw}
-          setNgwMap={() => {
-            //
-          }}
+          content={<ReactNgwMap {...mapOptions}></ReactNgwMap>}
+          sidebar={<Legend />}
+          onResize={onResize}
         >
-          <Legend />
         </DesktopLayout>
       ) : (
         <MobileLayout
