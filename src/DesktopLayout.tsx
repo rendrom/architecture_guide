@@ -11,15 +11,16 @@ import { BaseLayoutOptions } from './interfaces';
 
 interface DesktopLayoutOptions extends BaseLayoutOptions {
   vw: number;
+  splitPanel: boolean;
 }
 
 export const DesktopLayout = ({
   content,
   sidebar,
   vw,
+  splitPanel,
   ...splitterOptions
 }: DesktopLayoutOptions) => {
-  const [splitPanel, toggleSplitPanel] = useReducer((state) => !state, true);
 
   return (
     <div className={styles.main}>
@@ -35,7 +36,6 @@ export const DesktopLayout = ({
           </Splitter.Panel>
         )}
       </Splitter>
-      <div className={styles.snap} onClick={toggleSplitPanel}></div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 // import ReactNgwMap from '@nextgis/react-ngw-ol';
 import ReactNgwMap from '@nextgis/react-ngw-leaflet';
-import { ConfigProvider } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, ConfigProvider } from 'antd';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useViewport } from 'react-viewport-hooks';
 
 import type { Map } from 'leaflet';
@@ -12,7 +12,7 @@ import { MobileLayout } from './MobileLayout';
 
 import type { IdentifyItem } from '@nextgis/ngw-kit';
 import type { NgwIdentifyEvent, NgwMap } from '@nextgis/ngw-map';
-import type { MapContainerProps } from '@nextgis/react-ngw-map';
+import { MapControl, type MapContainerProps } from '@nextgis/react-ngw-map';
 import type { Point } from 'geojson';
 
 import type { ArchitectureFields } from './types';
@@ -20,6 +20,8 @@ import type { ArchitectureFields } from './types';
 export const App = () => {
   const { vw, vh } = useViewport();
   console.log(vw, vh);
+
+  const [splitPanel, toggleSplitPanel] = useReducer((state) => !state, true);
 
   const [ngwMap, setNgwMap] = useState<NgwMap<Map>>();
   const [selectedItem, setSelectedItem] = useState<
@@ -105,7 +107,14 @@ export const App = () => {
       {vw > vh ? (
         <DesktopLayout
           vw={vw}
-          content={<ReactNgwMap {...mapOptions}></ReactNgwMap>}
+          splitPanel={splitPanel}
+          content={
+            <ReactNgwMap {...mapOptions}>
+              <MapControl position='top-right' margin>
+                <Button type='primary' onClick={toggleSplitPanel}/>
+              </MapControl>
+            </ReactNgwMap>
+          }
           sidebar={<Legend />}
           onResize={onResize}
         >
@@ -113,7 +122,14 @@ export const App = () => {
       ) : (
         <MobileLayout
           vh={vh}
-          content={<ReactNgwMap {...mapOptions}></ReactNgwMap>}
+          splitPanel={splitPanel}
+          content={
+            <ReactNgwMap {...mapOptions}>
+              <MapControl position='top-right' margin>
+                <Button type='primary' onClick={toggleSplitPanel}/>
+              </MapControl>
+            </ReactNgwMap>
+          }
           sidebar={<Legend />}
           onResize={onResize}
         ></MobileLayout>

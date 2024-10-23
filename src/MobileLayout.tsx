@@ -7,15 +7,16 @@ import type { BaseLayoutOptions } from './interfaces';
 
 interface MobileLayoutOptions extends BaseLayoutOptions {
   vh: number;
+  splitPanel: boolean;
 }
 
 export const MobileLayout = ({
   content,
   sidebar,
   vh,
+  splitPanel,
   ...splitterOptions
 }: MobileLayoutOptions) => {
-  const [splitPanel, toggleSplitPanel] = useReducer((state) => !state, true);
 
   return (
     <div className={styles.main}>
@@ -29,7 +30,6 @@ export const MobileLayout = ({
           <Splitter.Panel defaultSize={0.3 * vh}>{sidebar}</Splitter.Panel>
         )}
       </Splitter>
-      <div className={styles.snap} onClick={toggleSplitPanel}></div>
     </div>
   );
 };
