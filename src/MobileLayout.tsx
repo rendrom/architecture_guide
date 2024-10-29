@@ -1,5 +1,4 @@
 import { Splitter } from 'antd';
-import { useReducer } from 'react';
 
 import styles from './app.module.css';
 
@@ -17,7 +16,6 @@ export const MobileLayout = ({
   splitPanel,
   ...splitterOptions
 }: MobileLayoutOptions) => {
-
   return (
     <div className={styles.main}>
       <Splitter layout="vertical" {...splitterOptions}>

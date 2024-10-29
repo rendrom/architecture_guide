@@ -1,30 +1,30 @@
 // import ReactNgwMap from '@nextgis/react-ngw-ol';
 import ReactNgwMap from '@nextgis/react-ngw-leaflet';
+import { type MapContainerProps, MapControl } from '@nextgis/react-ngw-map';
 import { Button, ConfigProvider } from 'antd';
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useViewport } from 'react-viewport-hooks';
 
-import type { Map } from 'leaflet';
-
+import { InfoPanel } from './panels/InfoPanel';
 import { LegendPanel } from './panels/legendPanel';
 import { DesktopLayout } from './DesktopLayout';
 import { MobileLayout } from './MobileLayout';
 
 import type { IdentifyItem } from '@nextgis/ngw-kit';
 import type { NgwIdentifyEvent, NgwMap } from '@nextgis/ngw-map';
-import { MapControl, type MapContainerProps } from '@nextgis/react-ngw-map';
 import type { Point } from 'geojson';
+import type { Map } from 'leaflet';
 
 import type { ArchitectureFields } from './types';
 
 export const App = () => {
   const { vw, vh } = useViewport();
-  console.log(vw, vh);
 
   const [splitPanel, toggleSplitPanel] = useReducer((state) => !state, true);
+  const [sidebarType, setSidebarType] = useState('legend');
 
   const [ngwMap, setNgwMap] = useState<NgwMap<Map>>();
-  const [selectedItem, setSelectedItem] = useState<
+  const [selectedItems, setSelectedItems] = useState<
     IdentifyItem<ArchitectureFields, Point>[]
   >([]);
 
@@ -34,11 +34,9 @@ export const App = () => {
         ArchitectureFields,
         Point
       >[];
-      console.log(items);
-      setSelectedItem(items);
-      console.log(selectedItem);
+      setSidebarType('info');
+      setSelectedItems(items);
     }
-    console.log('map click');
   }, []);
 
   useEffect(() => {
@@ -99,7 +97,7 @@ export const App = () => {
       theme={{
         components: {
           Splitter: {
-            splitTriggerSize: 50,
+            splitTriggerSize: 40,
           },
         },
       }}
@@ -108,29 +106,51 @@ export const App = () => {
         <DesktopLayout
           vw={vw}
           splitPanel={splitPanel}
+          sidebarType={sidebarType}
           content={
             <ReactNgwMap {...mapOptions}>
-              <MapControl position='top-right' margin>
-                <Button type='primary' onClick={toggleSplitPanel}/>
+              <MapControl position="top-right" margin>
+                <Button
+                  type="primary"
+                  shape="circle"
+                  onClick={toggleSplitPanel}
+                />
               </MapControl>
             </ReactNgwMap>
           }
           sidebar={<Legend />}
+          leftbar={<InfoPanel selectedItems={selectedItems} />}
           onResize={onResize}
-        >
-        </DesktopLayout>
+        ></DesktopLayout>
       ) : (
         <MobileLayout
           vh={vh}
           splitPanel={splitPanel}
           content={
             <ReactNgwMap {...mapOptions}>
-              <MapControl position='top-right' margin>
-                <Button type='primary' onClick={toggleSplitPanel}/>
+              <MapControl position="top-right" margin>
+                <Button
+                  type="primary"
+                  shape="circle"
+                  onClick={toggleSplitPanel}
+                />
+              </MapControl>
+              <MapControl position="bottom-right" margin>
+                <Button
+                  type="primary"
+                  shape="circle"
+                  onClick={() => setSidebarType('legend')}
+                />
               </MapControl>
             </ReactNgwMap>
           }
-          sidebar={<Legend />}
+          sidebar={
+            sidebarType === 'legend' ? (
+              <Legend />
+            ) : (
+              <InfoPanel selectedItems={selectedItems} />
+            )
+          }
           onResize={onResize}
         ></MobileLayout>
       )}
