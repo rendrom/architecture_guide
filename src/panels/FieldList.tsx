@@ -1,5 +1,11 @@
+import { useState } from 'react';
+
 import type { IdentifyItem } from '@nextgis/ngw-kit';
-import type { Point } from 'geojson';
+import type {
+  FeatureLayerFieldRead,
+  FeatureLayerRead,
+} from '@nextgisweb/feature-layer/type/api';
+import type { GeoJsonProperties, Point } from 'geojson';
 import type { ArchitectureFields } from 'src/types';
 
 export const FieldList = ({
@@ -7,23 +13,30 @@ export const FieldList = ({
 }: {
   item: IdentifyItem<ArchitectureFields, Point>;
 }) => {
-  return (
-    <div>
+  const [fieldArray, setFieldArray] = useState<FeatureLayerFieldRead[]>();
+  const [propertyArray, setPropertyArray] = useState<GeoJsonProperties>();
+  console.log('fieldsrender', item);
+  if (item) {
+    item.resource()?.then((resource: FeatureLayerRead) => {
+      setFieldArray(resource.fields);
+    });
+
+    item.geojson({})?.then((feature) => {
+      console.log(feature.properties);
+      setPropertyArray(feature.properties);
+    });
+
+    return (
       <div>
-        <b>Название:</b> {item.fields.name}
+        {fieldArray?.map((field, i) => {
+          return (
+            <div key={i}>
+              {field.display_name}
+              {propertyArray?.[field.keyname]}
+            </div>
+          );
+        })}
       </div>
-      <div>
-        <b>Год постройки:</b>
-        {item.fields.start_date}
-      </div>
-      <div>
-        <b>Архитекторы:</b>
-        <br />
-        {item.fields.architector1}
-        <br />
-        {item.fields.architector2}
-      </div>
-      <div>{item.fields.description_ru}</div>
-    </div>
-  );
+    );
+  }
 };

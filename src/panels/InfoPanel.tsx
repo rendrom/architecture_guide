@@ -1,10 +1,10 @@
-import { Collapse } from 'antd';
+import { Select } from 'antd';
+import { useState } from 'react';
 
 import { FieldList } from './FieldList';
 import styles from './infoPanel.module.css';
 
 import type { IdentifyItem } from '@nextgis/ngw-kit';
-import type { CollapseProps } from 'antd';
 import type { Point } from 'geojson';
 import type { ArchitectureFields } from 'src/types';
 
@@ -12,25 +12,38 @@ interface InfoPanelOptions {
   selectedItems: IdentifyItem<ArchitectureFields, Point>[];
 }
 
+interface SelectOption {
+  label: string | number;
+  value: number;
+}
+
 export const InfoPanel = ({ selectedItems }: InfoPanelOptions) => {
-  const collapseItmes: CollapseProps['items'] = [];
+  const optionsArray: SelectOption[] = [];
+  const [chosenItem, setChosenItem] = useState<
+    IdentifyItem<ArchitectureFields, Point>
+  >(selectedItems[0]);
 
   if (selectedItems) {
     selectedItems.map((item, i) => {
-      collapseItmes.push({
-        key: i,
-        label: item.fields.label | item.fields.name,
-        children: (
-          <div>
-            <FieldList item={item} />
-          </div>
-        ),
+      optionsArray.push({
+        label: item.label,
+        value: i,
       });
     });
-    console.log(collapseItmes);
+
+    const handleChange = (value: number) => {
+      setChosenItem(selectedItems[value]);
+    };
+
     return (
       <div className={styles.infoContainer}>
-        <Collapse items={collapseItmes} defaultActiveKey={['0']} />
+        <Select
+          defaultValue={0}
+          style={{ width: 120 }}
+          options={optionsArray}
+          onChange={() => handleChange}
+        />
+        <FieldList item={chosenItem} />
       </div>
     );
   }
