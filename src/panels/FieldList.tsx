@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { Spin } from 'antd';
+import { useEffect, useState } from 'react';
 
 import type { IdentifyItem } from '@nextgis/ngw-kit';
-import type {
-  FeatureLayerFieldRead,
-  FeatureLayerRead,
-} from '@nextgisweb/feature-layer/type/api';
-import type { GeoJsonProperties, Point } from 'geojson';
+import type { FeatureLayerFieldRead } from '@nextgisweb/feature-layer/type/api';
+import type { Point } from 'geojson';
 import type { ArchitectureFields } from 'src/types';
 
 export const FieldList = ({
@@ -13,30 +11,44 @@ export const FieldList = ({
 }: {
   item: IdentifyItem<ArchitectureFields, Point>;
 }) => {
+  const [loading, setLoading] = useState(true);
   const [fieldArray, setFieldArray] = useState<FeatureLayerFieldRead[]>();
-  const [propertyArray, setPropertyArray] = useState<GeoJsonProperties>();
-  console.log('fieldsrender', item);
-  if (item) {
-    item.resource()?.then((resource: FeatureLayerRead) => {
-      setFieldArray(resource.fields);
-    });
 
-    item.geojson({})?.then((feature) => {
-      console.log(feature.properties);
-      setPropertyArray(feature.properties);
-    });
+  useEffect(() => {
+    setLoading(true);
 
-    return (
-      <div>
-        {fieldArray?.map((field, i) => {
-          return (
-            <div key={i}>
-              {field.display_name}
-              {propertyArray?.[field.keyname]}
-            </div>
-          );
-        })}
-      </div>
-    );
+    const load = async () => {
+      Promise.all([
+        item.resource(),
+        new Promise((resolve) => {
+          setTimeout(resolve, 500);
+        }),
+      ])
+        .then(([resource]) => {
+          setFieldArray(resource.fields);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
+
+    load();
+  }, [item]);
+
+  if (loading) {
+    return <Spin />;
   }
+
+  return (
+    <div>
+      {fieldArray?.map((field) => {
+        return (
+          <div key={field.keyname}>
+            {field.display_name}
+            {item.fields?.[field.keyname]}
+          </div>
+        );
+      })}
+    </div>
+  );
 };

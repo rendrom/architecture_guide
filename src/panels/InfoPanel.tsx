@@ -1,5 +1,5 @@
 import { Select } from 'antd';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { FieldList } from './FieldList';
 import styles from './infoPanel.module.css';
@@ -19,9 +19,19 @@ interface SelectOption {
 
 export const InfoPanel = ({ selectedItems }: InfoPanelOptions) => {
   const optionsArray: SelectOption[] = [];
-  const [chosenItem, setChosenItem] = useState<
-    IdentifyItem<ArchitectureFields, Point>
-  >(selectedItems[0]);
+  const [chosenItem, setChosenItem] =
+    useState<IdentifyItem<ArchitectureFields, Point>>();
+
+  const handleChange = useCallback(
+    (value: number) => {
+      setChosenItem(selectedItems[value]);
+    },
+    [selectedItems],
+  );
+
+  useEffect(() => {
+    setChosenItem(selectedItems[0]);
+  }, [selectedItems]);
 
   if (selectedItems) {
     selectedItems.map((item, i) => {
@@ -31,19 +41,16 @@ export const InfoPanel = ({ selectedItems }: InfoPanelOptions) => {
       });
     });
 
-    const handleChange = (value: number) => {
-      setChosenItem(selectedItems[value]);
-    };
-
     return (
       <div className={styles.infoContainer}>
         <Select
           defaultValue={0}
           style={{ width: 120 }}
           options={optionsArray}
-          onChange={() => handleChange}
+          onChange={handleChange}
         />
-        <FieldList item={chosenItem} />
+
+        {chosenItem && <FieldList item={chosenItem} />}
       </div>
     );
   }
