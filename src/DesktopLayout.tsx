@@ -1,4 +1,5 @@
 import { Splitter } from 'antd';
+import { useMemo, useState } from 'react';
 
 import styles from './app.module.css';
 
@@ -20,20 +21,30 @@ export const DesktopLayout = ({
   sidebarType,
   ...splitterOptions
 }: DesktopLayoutOptions) => {
+  const showInfoPanel = useMemo(() => sidebarType === 'info', [sidebarType]);
+  const [infoPanelSize, setInfoPanelSize] = useState<number[]>([
+    0.3 * vw,
+    0.4 * vw,
+    0.3 * vw,
+  ]);
+
   return (
     <div className={styles.main}>
-      <Splitter {...splitterOptions}>
-        {sidebarType === 'info' && (
-          <Splitter.Panel defaultSize={0.3 * vw} max={0.3 * vw}>
-            {leftbar}
-          </Splitter.Panel>
-        )}
-        <Splitter.Panel defaultSize={0.4 * vw}>
+      <Splitter {...splitterOptions} onResize={setInfoPanelSize}>
+        <Splitter.Panel
+          size={showInfoPanel ? infoPanelSize[0] : 0}
+          max={0.3 * vw}
+          resizable={showInfoPanel}
+        >
+          {showInfoPanel && leftbar}
+        </Splitter.Panel>
+
+        <Splitter.Panel size={infoPanelSize[1]}>
           <div style={{ width: '100%', height: '100%' }}>{content}</div>
         </Splitter.Panel>
         {splitPanel && (
-          <Splitter.Panel defaultSize={0.3 * vw} max={0.4 * vw}>
-            {sidebar}
+          <Splitter.Panel size={infoPanelSize[2]} max={0.4 * vw}>
+            {splitPanel && sidebar}
           </Splitter.Panel>
         )}
       </Splitter>
