@@ -36,6 +36,8 @@ export const App = () => {
       >[];
       setSidebarType('info');
       setSelectedItems(items);
+    } else {
+      setSelectedItems([]);
     }
   }, []);
 

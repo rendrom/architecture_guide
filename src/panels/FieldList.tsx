@@ -1,4 +1,4 @@
-import { Spin } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 
 import type { IdentifyItem } from '@nextgis/ngw-kit';
@@ -40,13 +40,15 @@ export const FieldList = ({
   }
 
   return (
-    <div>
+    <div style={{ margin: '10px' }}>
       {fieldArray?.map((field) => {
         return (
-          <div key={field.keyname}>
-            {field.display_name}
-            {item.fields?.[field.keyname]}
-          </div>
+          <Row justify="space-between" key={field.keyname}>
+            <Col>
+              <b>{field.display_name}</b>
+            </Col>
+            <Col>{item.fields?.[field.keyname]}</Col>
+          </Row>
         );
       })}
     </div>

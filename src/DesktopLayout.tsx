@@ -42,11 +42,13 @@ export const DesktopLayout = ({
         <Splitter.Panel size={infoPanelSize[1]}>
           <div style={{ width: '100%', height: '100%' }}>{content}</div>
         </Splitter.Panel>
-        {splitPanel && (
-          <Splitter.Panel size={infoPanelSize[2]} max={0.4 * vw}>
-            {splitPanel && sidebar}
-          </Splitter.Panel>
-        )}
+        <Splitter.Panel
+          size={splitPanel ? infoPanelSize[2] : 0}
+          max={0.4 * vw}
+          resizable={splitPanel}
+        >
+          {splitPanel && sidebar}
+        </Splitter.Panel>
       </Splitter>
     </div>
   );
