@@ -19,8 +19,6 @@ export const LegendPanel = ({ ngwMap }: { ngwMap: NgwMap }) => {
     }
   }, [webmapAdapter]);
 
-  console.log('legendPanel', layer.item);
-
   if (!webmapAdapter) {
     return null;
   }

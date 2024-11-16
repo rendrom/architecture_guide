@@ -1,5 +1,5 @@
 import { Tree } from 'antd';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import type { NgwWebmapItem } from '@nextgis/ngw-kit';
 import type { TreeProps } from 'antd';
@@ -10,7 +10,7 @@ type TreeItem = {
   children?: TreeItem[];
 };
 
-export const LegendTree = (layer: NgwWebmapItem) => {
+export const LegendTree = ({ layer }: { layer: NgwWebmapItem }) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -22,39 +22,40 @@ export const LegendTree = (layer: NgwWebmapItem) => {
     setAutoExpandParent(false);
   };
 
-  console.log('legendTree', layer.item);
-  const getTree = (layer: NgwWebmapItem, i: number) => {
+  const counter = useRef(1);
+
+  const getTree = useCallback((layer: NgwWebmapItem) => {
+    const key = `layer ${counter.current++}`;
+
     // tree item obj
-    const TreeItem: TreeItem = {
-      title: layer.item?.display_name ?? `layer ${i}`,
-      key: layer.item?.display_name ?? `layer ${i}`,
+    const treeItem: TreeItem = {
+      title: layer.item?.display_name ?? `layer ${counter}`,
+      key,
     };
     // item children array
     const children: TreeItem[] = [];
     // if enabled by default add to checkedKeys
     if (layer.item.item_type === 'layer' && layer.item.layer_enabled) {
-      setCheckedKeys(checkedKeys.concat(TreeItem.key));
+      setCheckedKeys((old) => [...old, treeItem.key]);
     }
     if (['group', 'root'].includes(layer.item?.item_type)) {
       // get children
-      layer.tree
-        .getDescendants()
-        .map((descendant: NgwWebmapItem, j: number) => {
-          // put children into obj array
-          children.push(getTree(descendant, j));
-        });
-      TreeItem.children = children;
+      layer.tree.getDescendants().map((descendant: NgwWebmapItem) => {
+        // put children into obj array
+        children.push(getTree(descendant));
+      });
+      treeItem.children = children;
     }
-    return TreeItem;
-  };
+    return treeItem;
+  }, []);
 
   const nodeTree = useMemo(() => {
     if (layer.item && layer.tree) {
-      return [getTree(layer, 1)];
+      return [getTree(layer)];
     } else {
       console.log('layer properties undefined');
     }
-  }, [layer.item, layer.tree]);
+  }, [getTree, layer]);
 
   // console.log(getTree(layer, 1));
 
