@@ -8,6 +8,7 @@ type TreeItem = {
   title: string;
   key: string;
   children?: TreeItem[];
+  parentKey?: string;
   layer?: NgwWebmapItem;
 };
 
@@ -31,7 +32,7 @@ export const LegendTree = ({ layer }: { layer: NgwWebmapItem }) => {
 
   const counter = useRef(1);
 
-  const getTree = useCallback((layer: NgwWebmapItem) => {
+  const getTree = useCallback((layer: NgwWebmapItem, parentItem: TreeItem) => {
     const key = layer.layer
       ? `layer-${counter.current++}-${layer.layer.id}`
       : `counter-${counter.current++}`;
@@ -40,20 +41,21 @@ export const LegendTree = ({ layer }: { layer: NgwWebmapItem }) => {
       title: layer.item?.display_name ?? `layer ${counter}`,
       key,
       layer,
+      parentKey: parentItem.key,
     };
     // item children array
     const children: TreeItem[] = [];
     // if enabled by default add to checkedKeys
     if (layer.item.item_type === 'layer' && layer.item.layer_enabled) {
-      setCheckedKeys((old) => [...old, treeItem.key]);
+      setCheckedKeys((old) => [...old, treeItem.key, parentItem.key]);
     }
     if (['group', 'root'].includes(layer.item?.item_type)) {
       // get children
       layer.tree.getDescendants().map((descendant: NgwWebmapItem) => {
         // put children into obj array
-        children.push(getTree(descendant));
+        children.push(getTree(descendant, treeItem));
       });
-      treeItem.children = children;
+      treeItem.children = children; // set children
     }
     treeItemsRef.current.push(treeItem);
     return treeItem;
@@ -61,7 +63,17 @@ export const LegendTree = ({ layer }: { layer: NgwWebmapItem }) => {
 
   const nodeTree = useMemo(() => {
     if (layer.item && layer.tree) {
-      return [getTree(layer)];
+      const nodes: TreeItem[] = [];
+      const rootItem: TreeItem = {
+        title: layer.item?.display_name ?? 'root',
+        key: '0',
+        layer,
+      };
+      layer.tree.getDescendants().map((descendant: NgwWebmapItem) => {
+        // put children into obj array
+        nodes.push(getTree(descendant, rootItem));
+      });
+      return nodes;
     } else {
       console.log('layer properties undefined');
     }
