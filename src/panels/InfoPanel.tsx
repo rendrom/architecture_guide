@@ -5,11 +5,14 @@ import { FieldList } from './FieldList';
 import styles from './infoPanel.module.css';
 
 import type { IdentifyItem } from '@nextgis/ngw-kit';
+import type { NgwMap } from '@nextgis/ngw-map';
 import type { Point } from 'geojson';
+import type { Map } from 'leaflet';
 import type { ArchitectureFields } from 'src/types';
 
 interface InfoPanelOptions {
   selectedItems: IdentifyItem<ArchitectureFields, Point>[];
+  ngwMap: NgwMap<Map>;
 }
 
 interface SelectOption {
@@ -17,7 +20,7 @@ interface SelectOption {
   value: number;
 }
 
-export const InfoPanel = ({ selectedItems }: InfoPanelOptions) => {
+export const InfoPanel = ({ selectedItems, ngwMap }: InfoPanelOptions) => {
   const optionsArray: SelectOption[] = [];
   const [chosenItem, setChosenItem] =
     useState<IdentifyItem<ArchitectureFields, Point>>();
@@ -28,6 +31,13 @@ export const InfoPanel = ({ selectedItems }: InfoPanelOptions) => {
     },
     [selectedItems],
   );
+
+  useEffect(() => {
+    ngwMap.removeLayer('geojson');
+    chosenItem?.geojson({}).then((feature) => {
+      ngwMap.addGeoJsonLayer({ data: feature, id: 'geojson' });
+    });
+  }, [chosenItem, ngwMap]);
 
   useEffect(() => {
     setChosenItem(selectedItems[0]);

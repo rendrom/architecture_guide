@@ -121,7 +121,11 @@ export const App = () => {
             </ReactNgwMap>
           }
           sidebar={<Legend />}
-          leftbar={<InfoPanel selectedItems={selectedItems} />}
+          leftbar={
+            ngwMap && (
+              <InfoPanel selectedItems={selectedItems} ngwMap={ngwMap} />
+            )
+          }
           onResize={onResize}
         ></DesktopLayout>
       ) : (
@@ -150,7 +154,9 @@ export const App = () => {
             sidebarType === 'legend' ? (
               <Legend />
             ) : (
-              <InfoPanel selectedItems={selectedItems} />
+              ngwMap && (
+                <InfoPanel selectedItems={selectedItems} ngwMap={ngwMap} />
+              )
             )
           }
           onResize={onResize}
