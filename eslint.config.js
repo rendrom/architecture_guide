@@ -1,5 +1,7 @@
 import pluginJs from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -9,10 +11,22 @@ export default [
     files: ['**/*.{js,mjs,cjs,ts}'],
     ignores: ['node_modules', 'dist', 'public'],
   },
+  reactPlugin.configs.flat.recommended,
+  reactPlugin.configs.flat['jsx-runtime'],
   {
     languageOptions: { globals: globals.browser },
+    plugins: {
+      'react-hooks': reactHooksPlugin,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     rules: {
       indent: 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       camelcase: 'off',
       'max-len': [
         'error',
@@ -25,6 +39,14 @@ export default [
           ignoreTemplateLiterals: true,
         },
       ],
+    },
+  },
+  {
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'simple-import-sort/exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'warn',
       'simple-import-sort/imports': [
         'warn',
@@ -57,15 +79,6 @@ export default [
           ],
         },
       ],
-    },
-  },
-  {
-    plugins: {
-      'simple-import-sort': simpleImportSort,
-    },
-    rules: {
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
     },
   },
   pluginJs.configs.recommended,
